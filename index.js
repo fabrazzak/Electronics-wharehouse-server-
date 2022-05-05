@@ -53,6 +53,7 @@ async function run(){
             const id = req.body.id;
             const filter = { _id: ObjectId(id) };
             const options = { upsert: true };
+            
             const updateDoc = {
                 $set: { quantity: quantity, sold: sold }
             };
@@ -70,6 +71,7 @@ async function run(){
         })
         app.get('/add-product/',async(req,res)=>{
             const email=req.query.email;
+            
             const query={email:email};
             const cursor= productCollection.find(query);
             const result= await cursor.toArray();
