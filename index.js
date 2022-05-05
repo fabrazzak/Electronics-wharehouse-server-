@@ -53,7 +53,7 @@ async function run(){
             const id = req.body.id;
             const filter = { _id: ObjectId(id) };
             const options = { upsert: true };
-            
+
             const updateDoc = {
                 $set: { quantity: quantity, sold: sold }
             };
@@ -64,6 +64,7 @@ async function run(){
         })
 
         app.post('/add-product', async(req,res)=>{
+            
             const { supplierName, email, name, description, quantity, sold, img }=req.body;
             const result = await productCollection.insertOne({ supplierName, email, name, description, quantity, sold, img });
             res.send(result);
