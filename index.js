@@ -20,12 +20,14 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run(){
     try{
         await client.connect();
+
         const productCollection = client.db("electronics-warehouse").collection("products");
         console.log("db connected");
 
         app.get("/product",async(req,res)=>{
             const query={};
             const cursor= productCollection.find(query);
+
             const products= await cursor.toArray();
             res.send(products);
         })
@@ -35,20 +37,7 @@ async function run(){
             const product= await productCollection.findOne(query);
             res.send(product)
         })
-        app.put('/product/:id',async(req,res)=>{
-            const quantity = req.body.totalQuantity;
-            const sold =req.body.totalSold;
-            const id=req.body.id;
-            const filter={_id: ObjectId(id)};
-            const options = { upsert : true};
-            const updateDoc = {
-                $set: {quantity:quantity,sold:sold}
-            };
-            
-            const result= await productCollection.updateOne(filter,updateDoc,options);
-            res.send(result);
-
-        })
+       
 
         app.delete('/product/:id',async(req,res)=>{
             // const id =req.body.id;
@@ -56,6 +45,21 @@ async function run(){
             const query= {_id:ObjectId(id)};
             const result= await productCollection.deleteOne(query);
             res.send(result);
+        })
+        app.put('/product/:id', async (req, res) => {
+            const quantity = req.body.totalQuantity;
+
+            const sold = req.body.totalSold;
+            const id = req.body.id;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: { quantity: quantity, sold: sold }
+            };
+
+            const result = await productCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+
         })
 
         app.post('/add-product', async(req,res)=>{
