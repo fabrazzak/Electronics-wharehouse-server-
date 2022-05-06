@@ -25,16 +25,22 @@ async function run(){
         console.log("db connected");
 
         app.get("/product",async(req,res)=>{
+            const page = req.query.page;
+            const pageCount = req.query.pagecount;
             const query={};
             const cursor= productCollection.find(query);
+            let products;
+            if(page || size){
+                products = await cursor.skip(page*pageCount).limit(pageCount).toArray();
+            }
 
-            const products= await cursor.toArray();
             res.send(products);
         })
         app.get('/page-count',async(req,res)=>{
+  
             const query={};
             const  cursor=productCollection.find(query);
-            const  result= await cursor.count();
+            const result = await productCollection.countDocuments();
             res.send({result});
         })
         app.get("/product/:id",async(req,res)=>{
