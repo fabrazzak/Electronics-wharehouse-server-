@@ -26,18 +26,17 @@ async function run(){
 
         app.get("/product",async(req,res)=>{
             const page = req.query.page;
-            const pageCount = req.query.pagecount;
+            console.log(req.query)
+            const size = req.query.size;
             const query={};
-            const cursor= productCollection.find(query);
-            let products;
-
-            if(page || size){
-                products = await cursor.skip(page*pageCount).limit(pageCount).toArray();
-            }else{
-                products = await cursor.toArray();
-
-            }
-
+            const cursor= productCollection.find(query);           
+               let products ;
+               if(page || size){
+                   products = await cursor.skip(page * size).limit(size).toArray();
+               }else{
+                  products= await cursor.skip(page * size).limit(size).toArray();
+               }
+              
             res.send(products);
         })
 
