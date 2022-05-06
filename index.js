@@ -30,12 +30,17 @@ async function run(){
             const query={};
             const cursor= productCollection.find(query);
             let products;
+
             if(page || size){
                 products = await cursor.skip(page*pageCount).limit(pageCount).toArray();
+            }else{
+                products = await cursor.toArray();
+
             }
 
             res.send(products);
         })
+
         app.get('/page-count',async(req,res)=>{
   
             const query={};
