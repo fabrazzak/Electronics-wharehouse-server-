@@ -5,8 +5,26 @@ const port =process.env.PORT || 5000;
 require('dotenv').config();
 app.use(cors());
 app.use(express.json());
-// dbbasename electronics-warehouse 
-// user: products 
+// const jwt=require('jsonwebtoken');
+
+
+// function verifyJWT (req,res,next){
+//     const authHeader=req.headers.authorization;
+//     if(!authHeader){
+//         return res.stutus(401).send({message: "UnAuthorize access"});
+//     }
+//     const token= authHeader.split(' ')[1];
+//     jwt.verify(token,process.env.ACCESS_TOKEN,(err,decoded)=>{
+//         if(err){
+//             return res.stutus(404).send({message: 'forbidden access'});
+//         }
+//         console.log('decoded',decoded);
+//         req.decoded=decoded;
+//     })
+
+//     next();
+    
+// }
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
@@ -25,20 +43,30 @@ async function run(){
         console.log("db connected");
 
         app.get("/product",async(req,res)=>{
-            const page = req.query.page;
-            console.log(req.query)
-            const size = req.query.size;
+            const page = parseInt(req.query.page);
+          
+            const size = parseInt(req.query.pagecount);
             const query={};
             const cursor= productCollection.find(query);           
-               let products ;
-               if(page || size){
-                   products = await cursor.skip(page * size).limit(size).toArray();
-               }else{
-                  products= await cursor.skip(page * size).limit(size).toArray();
-               }
-              
+            let products ;
+            if(page || size){
+                products = await cursor.skip(page*size).limit(size).toArray(); 
+
+            }else{
+                products = await cursor.toArray(); 
+
+            }
+                       
             res.send(products);
         })
+
+      //  auth 
+    //   app.post('/login',(req,res)=>{
+    //       const user=req.body;
+    //       const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN,{expiresIn: "1d"});
+    //       res.send({accessToken});
+
+    //   })
 
         app.get('/page-count',async(req,res)=>{
   
@@ -83,11 +111,11 @@ async function run(){
 
         })
         app.get('/add-product/',async(req,res)=>{
-            const email=req.query.email;
-            const query={email:email};
-            const cursor= productCollection.find(query);
-            const result= await cursor.toArray();
-            res.send(result);
+                const email = req.query.email;
+                const query = { email: email };
+                const cursor = productCollection.find(query);
+                const result = await cursor.toArray();
+                res.send(result);
         })
 
     }
