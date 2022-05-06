@@ -5,7 +5,7 @@ const port =process.env.PORT || 5000;
 require('dotenv').config();
 app.use(cors());
 app.use(express.json());
-// const jwt=require('jsonwebtoken');
+const jwt=require('jsonwebtoken');
 
 
 // function verifyJWT (req,res,next){
@@ -61,12 +61,12 @@ async function run(){
         })
 
       //  auth 
-    //   app.post('/login',(req,res)=>{
-    //       const user=req.body;
-    //       const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN,{expiresIn: "1d"});
-    //       res.send({accessToken});
+      app.post('/login',(req,res)=>{
+          const user=req.body;
+          const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN,{expiresIn: "1d"});
+          res.send({accessToken});
 
-    //   })
+      })
 
         app.get('/page-count',async(req,res)=>{
   
