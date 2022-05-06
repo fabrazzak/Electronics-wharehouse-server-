@@ -31,6 +31,12 @@ async function run(){
             const products= await cursor.toArray();
             res.send(products);
         })
+        app.get('/page-count',async(req,res)=>{
+            const query={};
+            const  cursor=productCollection.find(query);
+            const  result= await cursor.count();
+            res.send({result});
+        })
         app.get("/product/:id",async(req,res)=>{
             const id = req.params;
             const query={_id:ObjectId(id)};
